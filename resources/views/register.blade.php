@@ -1,6 +1,15 @@
 @extends('page')
 @section('title', 'Sign up')
 
+@section('nav')
+  <ul>
+    <li><a href="{{ url('/') }}">Home</a></li>
+    <li><a href="{{ url('/register') }}">Sign up</a></li>
+    <li><a href="{{ url('/login') }}">Sign in</a></li>
+    <li><a href="{{ url('/pay') }}">Make a payment</a></li>
+  </ul>
+@endsection
+
 @section('content')
   <form action="{{ url('/register') }}" method="POST">
     @csrf

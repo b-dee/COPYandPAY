@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PaymentController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,10 @@ use App\Http\Controllers\PaymentController;
 */
 
 Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect('/pay');
+    }
+
     return view('home');
 });
 
@@ -29,4 +34,8 @@ Route::post('/login', [LoginController::class, 'logIn']);
 Route::any('/logout', [LoginController::class, 'logOut'])->middleware('auth');
 
 Route::get('/pay', [PaymentController::class, 'index'])->middleware('auth');
-// Route::post('/login', [LoginController::class, 'logIn']);
+Route::post('/pay', [PaymentController::class, 'pay'])->middleware('auth');
+
+Route::get('/pay/{id}', [PaymentController::class, 'index'])->middleware('auth');
+
+Route::get('/pay/{id}/result', [PaymentController::class, 'result'])->middleware('auth');
