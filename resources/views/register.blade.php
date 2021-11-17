@@ -2,30 +2,43 @@
 @section('title', 'Sign up')
 
 @section('nav')
-  <ul>
-    <li><a href="{{ url('/') }}">Home</a></li>
-    <li><a href="{{ url('/register') }}">Sign up</a></li>
-    <li><a href="{{ url('/login') }}">Sign in</a></li>
-    <li><a href="{{ url('/pay') }}">Make a payment</a></li>
-  </ul>
+  <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Home</a></li>
+  <li class="nav-item active"><a class="nav-link" href="{{ url('/register') }}">Sign up</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url('/login') }}">Sign in</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url('/pay') }}">Make a payment</a></li>
 @endsection
 
 @section('content')
+  <h1 class="pb-4">Sign up</h1>
   <form action="{{ url('/register') }}" method="POST">
     @csrf
-    <label for="name">Name:</label>
+    <div class="row">
+      <div class="col-md-6 col-lg-4">
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input class="form-control mt-2" type="text" name="name" id="name" placeholder="Name">
+        </div>
+      </div>
+    </div>
     <br>
-    <input type="text" name="name" id="name">
+    <div class="row">
+      <div class="col-md-6 col-lg-4">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input class="form-control mt-2" type="text" name="email" id="email" placeholder="Email">
+        </div>
+      </div>
+    </div>
     <br>
-    <label for="email">Email:</label>
+    <div class="row">
+      <div class="col-md-6 col-lg-4">
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input class="form-control mt-2" type="password" name="password" id="password" placeholder="Password">
+        </div>
+      </div>
+    </div>
     <br>
-    <input type="text" name="email" id="email">
-    <br>
-    <label for="password">Password:</label>
-    <br>
-    <input type="password" name="password" id="password">
-    <br>
-    <br>
-    <input type="submit" value="Sign up">
+    <button type="submit" class="btn btn-primary">Sign up</button>
   </form>
 @endsection

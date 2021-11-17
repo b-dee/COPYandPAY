@@ -2,36 +2,45 @@
 @section('title', 'Pay')
 
 @section('nav')
-  <ul>
-    <li><a href="{{ url('/pay') }}">Make a payment</a></li>
-    <li><a href="{{ url('/logout') }}">Sign out</a></li>
-  </ul>
+  <li class="nav-item active"><a class="nav-link" href="{{ url('/pay') }}">Make a payment</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url('/logout') }}">Sign out</a></li>
 @endsection
 
+{{-- There is no particular reason I did this in one view. It could have been two separate views. 
+I was just playing with the new blade template extension I found for my editor! --}}
+
 @section('content')
-  <h1>Make a payment</h1>
-  <p>Please enter your payment details below.</p>
+  <h1 class="pb-4">Make a payment</h1>
+  <p class="lead">Please enter your payment details below.</p>
   @if ($isPayment)
     {{-- Payment form --}}
-    <form action="{{ url("/pay/{$checkoutId}/result") }}" class="paymentWidgets" data-brands="VISA MASTER AMEX"></form>
+    <form action="{{ url("/pay/{$checkoutId}/result") }}" class="paymentWidgets" data-brands="VISA"></form>
   @else
     {{-- Preparation form --}}
     <form action="{{ url('/pay') }}" method="POST">
       @csrf
-      <label for="amount">Amount:</label>
+      <div class="row">
+        <div class="col-md-6 col-lg-4">
+          <div class="form-group">
+            <label for="amount">Amount:</label>
+            <input class="form-control mt-2" type="number" name="amount" id="amount" min="0" step="0.01" placeholder="Amount">
+          </div>
+        </div>
+      </div>
       <br>
-      <input type="number" name="amount" id="amount" min="0" step="0.01">
+      <div class="row">
+        <div class="col-md-6 col-lg-4">
+          <div class="form-group">
+            <label for="reference">Reference:</label>
+            <input class="form-control mt-2" type="text" name="reference" id="reference" placeholder="Reference">
+          </div>
+        </div>
+      </div>
       <br>
-      <label for="reference">Reference:</label>
-      <br>
-      <input type="text" name="reference" id="reference">
-      <br>
-      <br>
-      <input type="submit" value="Continue">
+      <button type="submit" class="btn btn-primary">Continue</button>
     </form>
   @endif
 @endsection
-
 
 @section('scripts')
   @if ($isPayment)
