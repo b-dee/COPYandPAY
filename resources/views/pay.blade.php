@@ -6,7 +6,7 @@
   <li class="nav-item"><a class="nav-link" href="{{ url('/logout') }}">Sign out</a></li>
 @endsection
 
-{{-- There is no particular reason I did this in one view. It could have been two separate views. 
+{{-- There is no particular reason I did this in one view. It could have been two separate views (like result). 
 I was just playing with the new blade template extension I found for my editor! --}}
 
 @section('content')

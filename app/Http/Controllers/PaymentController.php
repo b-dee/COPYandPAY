@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
 {
+    const PAYMENT_ENDPOINT_BASE = 'https://eu-test.oppwa.com/';
+
     public function index($id = null)
     {
         return view('pay', [
@@ -22,13 +24,14 @@ class PaymentController extends Controller
             'reference' => ['required']
         ]);
 
-        $url = 'https://eu-test.oppwa.com/v1/checkouts';
+        $url = self::PAYMENT_ENDPOINT_BASE . 'v1/checkouts';
         $entityId = env('COPY_AND_PAY_ENTITY_ID');
         $accessToken = env('COPY_AND_PAY_ACCESS_TOKEN');
         $merchantTxId = $validatedDetails['reference'];
         $amount = strval($validatedDetails['amount']);
 
         // Hardcode these for now
+        // TODO: Allow merchant to set these
         $currency = 'GBP';
         $paymentType = 'DB';
 
@@ -51,11 +54,27 @@ class PaymentController extends Controller
             }
         }
 
-        return 'oops!';
+        return 'oops!'; // TODO: Proper error handling and display 
     }
 
     public function result(Request $request)
     {
-        return 'This is the results page...';
+        $resourcePath = $request->query('resourcePath');
+
+        if ($resourcePath !== null) {
+            $url = self::PAYMENT_ENDPOINT_BASE . $resourcePath;
+            $entityId = env('COPY_AND_PAY_ENTITY_ID');
+            $accessToken = env('COPY_AND_PAY_ACCESS_TOKEN');
+
+            $response = Http::withToken($accessToken)->get($url, [
+                'entityId' => $entityId
+            ]);
+
+            $res = var_export($response, true);
+
+            return "<pre>$res</pre>"; // view('result', []);
+        }
+
+        return 'oops!'; // TODO: Proper error handling and display 
     }
 }
