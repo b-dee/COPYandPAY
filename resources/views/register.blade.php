@@ -16,7 +16,10 @@
       <div class="col-md-6 col-lg-4">
         <div class="form-group">
           <label for="name">Name:</label>
-          <input class="form-control mt-2" type="text" name="name" id="name" placeholder="Name">
+          <input class="form-control mt-2" type="text" name="name" id="name" placeholder="Name" value="{{ old('name') }}">
+          @error('name')
+            <small class="form-text text-danger">{{ $message }}</small>
+          @enderror
         </div>
       </div>
     </div>
@@ -25,7 +28,10 @@
       <div class="col-md-6 col-lg-4">
         <div class="form-group">
           <label for="email">Email:</label>
-          <input class="form-control mt-2" type="text" name="email" id="email" placeholder="Email">
+          <input class="form-control mt-2" type="text" name="email" id="email" placeholder="Email" value="{{ old('email') }}">
+          @error('email')
+            <small class="form-text text-danger">{{ $message }}</small>
+          @enderror
         </div>
       </div>
     </div>
@@ -35,6 +41,9 @@
         <div class="form-group">
           <label for="password">Password:</label>
           <input class="form-control mt-2" type="password" name="password" id="password" placeholder="Password">
+          @error('password')
+            <small class="form-text text-danger">{{ $message }}</small>
+          @enderror
         </div>
       </div>
     </div>

@@ -24,7 +24,10 @@ I was just playing with the new blade template extension I found for my editor! 
         <div class="col-md-6 col-lg-4">
           <div class="form-group">
             <label for="amount">Amount:</label>
-            <input class="form-control mt-2" type="number" name="amount" id="amount" min="0" step="0.01" placeholder="Amount">
+            <input class="form-control mt-2" type="number" name="amount" id="amount" min="0" step="0.01" placeholder="Amount" value="{{ old('amount') }}">
+            @error('amount')
+              <small class="form-text text-danger">{{ $message }}</small>
+            @enderror
           </div>
         </div>
       </div>
@@ -33,7 +36,10 @@ I was just playing with the new blade template extension I found for my editor! 
         <div class="col-md-6 col-lg-4">
           <div class="form-group">
             <label for="reference">Reference:</label>
-            <input class="form-control mt-2" type="text" name="reference" id="reference" placeholder="Reference">
+            <input class="form-control mt-2" type="text" name="reference" id="reference" placeholder="Reference" value="{{ old('reference') }}">
+            @error('reference')
+              <small class="form-text text-danger">{{ $message }}</small>
+            @enderror
           </div>
         </div>
       </div>

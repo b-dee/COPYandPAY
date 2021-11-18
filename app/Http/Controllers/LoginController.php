@@ -18,9 +18,10 @@ class LoginController extends Controller
 
     public function logIn(Request $request)
     {
+        // Just some simple validation, not too realistic
         $validatedCreds = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'email' => ['required', 'email', 'max:100'],
+            'password' => ['required', 'min:8', 'max:20'],
         ]);
 
         if (Auth::attempt($validatedCreds)) {
@@ -29,7 +30,7 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Email or password invalid.',
+            'password' => 'Email or password invalid.',
         ]);
     }
 

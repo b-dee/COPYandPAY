@@ -32,9 +32,10 @@ class PaymentController extends Controller
 
     public function pay(Request $request)
     {
+        // Just some simple validation, not too realistic
         $validatedDetails = $request->validate([
-            'amount' => ['required'],
-            'reference' => ['required']
+            'amount' => ['required', 'min:0.01', 'max:999999', 'numeric'],
+            'reference' => ['required', 'min:8', 'max:50']
         ]);
 
         $url = self::PAYMENT_ENDPOINT_BASE . 'v1/checkouts';
@@ -76,7 +77,9 @@ class PaymentController extends Controller
             }
         }
 
-        return 'oops!'; // TODO: Proper error handling and display 
+        // TODO: Proper error handling and display in a real app
+        // I won't implement here since this is a demo app
+        return 'oops!';
     }
 
     public function result(Request $request)
@@ -119,6 +122,8 @@ class PaymentController extends Controller
 
         }
 
-        return 'oops!'; // TODO: Proper error handling and display 
+        // TODO: Proper error handling and display in a real app
+        // I won't implement here since this is a demo app
+        return 'oops!';
     }
 }
