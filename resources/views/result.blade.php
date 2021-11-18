@@ -1,17 +1,15 @@
 @extends('page')
-@section('title', $result)
+@section('title', "Payment {$resultMsg}")
 
 @section('nav')
   <li class="nav-item"><a class="nav-link" href="{{ url('/pay') }}">Make a payment</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url('/pay/history') }}">Payment history</a></li>
   <li class="nav-item"><a class="nav-link" href="{{ url('/logout') }}">Sign out</a></li>
 @endsection
 
 @section('content')
-  <h1 class="pb-4">{{ $result }}</h1>
-@endsection
-
-@section('scripts')
-  @if ($isPayment)
-    <script src="https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId={{ $checkoutId }}"></script>
-  @endif
+  <h1 class="pb-4">Payment {{ $resultMsg }}</h1>
+  <p class="lead">Result code: {{ $resultCode }}</p>
+  <p class="lead">Description: {{ $resultDesc }}</p>
+  <p>Good news, you've paid! You can now <a href="{{ url('/pay') }}">Make another payment</a> or <a href="{{ url('/pay/history') }}">View payment history</a>.</p>
 @endsection

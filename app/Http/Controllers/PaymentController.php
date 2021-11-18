@@ -2,18 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
     const PAYMENT_ENDPOINT_BASE = 'https://eu-test.oppwa.com/';
+    const SUCCESS_RESULT_CODE = '000.100.110'; // Integrator Test Mode success
 
     public function index($id = null)
     {
         return view('pay', [
             'checkoutId' => $id,
             'isPayment' => $id !== null
+        ]);
+    }
+
+    public function history() {
+        // In a production app I'd be paginating this properly, 
+        // but we're only going to have a few records here... 
+        $payments = Payment::where('user_id', Auth::id())->get();
+
+        return view('history', [
+            'payments' => $payments
         ]);
     }
 
@@ -50,6 +63,15 @@ class PaymentController extends Controller
             $res = $response->json();
             if (is_array($res) && isset($res['id'])) {
                 $checkoutId = $res['id'];
+
+                // Store merchant tx reference for use later
+                $payment = new Payment();
+                $payment->user_id = Auth::id();
+                $payment->merchant_tx_id = $merchantTxId;
+                $payment->amount = $amount;
+                $payment->currency = $currency;
+                $payment->save();
+
                 return redirect("/pay/{$checkoutId}");
             }
         }
@@ -70,9 +92,31 @@ class PaymentController extends Controller
                 'entityId' => $entityId
             ]);
 
-            $res = var_export($response, true);
+            if ($response->ok()) {
+                $res = $response->json();
+                if (is_array($res)) {
+                    $resultCode = $res['result']['code'];
+                    $resultDesc = $res['result']['description'];
+                    $merchantTxId = $res['merchantTransactionId'];
 
-            return "<pre>$res</pre>"; // view('result', []);
+                    // Update payment record with result
+                    $payment = Payment::where('merchant_tx_id', $merchantTxId)->update([
+                        'result_code' => $resultCode,
+                        'result_desc' => $resultDesc
+                    ]);
+
+                    $resultMsg = $resultCode === self::SUCCESS_RESULT_CODE
+                        ? 'Successful'
+                        : 'Failed';
+                    
+                    return view('result', [
+                        'resultMsg' => $resultMsg,
+                        'resultCode' => $resultCode,
+                        'resultDesc' => $resultDesc
+                    ]);
+                }
+            }
+
         }
 
         return 'oops!'; // TODO: Proper error handling and display 

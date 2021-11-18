@@ -3,6 +3,7 @@
 
 @section('nav')
   <li class="nav-item active"><a class="nav-link" href="{{ url('/pay') }}">Make a payment</a></li>
+  <li class="nav-item"><a class="nav-link" href="{{ url('/pay/history') }}">Payment history</a></li>
   <li class="nav-item"><a class="nav-link" href="{{ url('/logout') }}">Sign out</a></li>
 @endsection
 
