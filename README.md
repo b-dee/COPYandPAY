@@ -1,66 +1,48 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# COPYandPAY
+### A small app to test the COPYandPAY API.
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Admittedly this is a little bit of a rush job. Busy week leading the development of a new feature. All core requirements are met. I didn't get to the additional.
 
-## About Laravel
+Since I'm not sure exactly how or where you plan to run this app I've had to make some assumptions. I went for the most self-contained option when bootstrapping it, using Sail rather than the Laravel Installer. One command should bring up all required services in Docker containers, leaving your existing development environment (if any) alone. The trade-off is that you will need Docker installed. Apologies if you don't already have this!
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## To run the app:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Only a (PHP enabled) webserver and the MySQL database are required.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Port setting are the defaults for HTTP and MySQL, but can probably be changed via .env.
 
-## Learning Laravel
+You'll need to set the following two variables in .env to the ones in the test spec. I didn't want to chance them being sensitive (though I assume they aren't).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+COPY_AND_PAY_ENTITY_ID=...
+COPY_AND_PAY_ACCESS_TOKEN=...
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+If you already have a development environment (apache, nginx etc.) you may be able to use that. You might even get away with running `php artisan serve` depending on your setup. 
 
-## Laravel Sponsors
+If not, spin up the containers:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+1. Install Docker (Docker Desktop on Mac/Win) from [here](https://docs.docker.com/get-docker/) if you don't already have it. If you're on Linux, you'll also need to install Docker Compose separately from [here](https://docs.docker.com/compose/install/).  
+2. Clone this repository and change to its root directory.
+3. Install the composer dependencies by running
 
-### Premium Partners
+```
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v $(pwd):/var/www/html \
+    -w /var/www/html \
+    laravelsail/php80-composer:latest \
+    composer install --ignore-platform-reqs
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-- **[Romega Software](https://romegasoftware.com)**
+4. Run `./vendor/bin/sail up -d` to create and start containers for the laravel app and mysql. 
 
-## Contributing
+## To stop the app:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. From the repository's root directory run `./vendor/bin/sail down` to stop and clean up the containers.
 
-## Code of Conduct
+Any problems, get in touch and I'll be more than happy to help.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## If I had more time I'd...
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Refactor the PaymentController. It grew in-place, and I usually code much cleaner than this. 
+- Put in more error checking. You'll see a shortage of that.
+- Display those errors properly. Right now it just outputs unhelpful strings in lieu of proper error views.
