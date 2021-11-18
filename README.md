@@ -34,6 +34,7 @@ docker run --rm \
 ```
 
 4. Run `./vendor/bin/sail up -d` to create and start containers for the laravel app and mysql. 
+5. Run the database migrations to set up the database tables: `./vendor/bin/sail php artisan migrate`.
 
 ## To stop the app:
 
