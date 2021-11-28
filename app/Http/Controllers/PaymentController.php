@@ -124,24 +124,22 @@ class PaymentController extends Controller
 
     public function result(Request $request)
     {
-        $id = $request->query('id');
-        $resourcePath = $request->query('resourcePath');
-
-        if ($id === null || $resourcePath === null) {
-            return abort(400, "Parameters 'id' and 'resourcePath' are required");
-        }
+        $valid = $request->validate([
+            'id' => [ 'required', 'string', 'max:48' ],
+            'resourcePath' => [ 'required', 'string' ]
+        ]);
 
         // Do we have record of this payment?
         $payment = Payment::firstWhere([
             'user_id' => Auth::id(),
-            'checkout_id' => $id
+            'checkout_id' => $valid['id']
         ]);
 
         if ($payment === null) {
             return abort(400, 'Payment not recognised');
         }
 
-        $resultUrl = $this->paymentBaseUrl . $resourcePath;
+        $resultUrl = $this->paymentBaseUrl . $valid['resourcePath'];
 
         $response = Http::withToken($this->accessToken)
             ->get($resultUrl, ['entityId' => $this->entityId])

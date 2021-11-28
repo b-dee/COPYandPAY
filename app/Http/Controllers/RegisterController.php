@@ -11,26 +11,27 @@ class RegisterController extends Controller
 {
     public function index()
     {
-        if (Auth::check()) {
-            return redirect('/pay');
-        }
-
-        return view('register');
+        return Auth::check()
+            ? redirect('/pay')
+            : view('register');
     }
 
     public function register(Request $request)
     {
-        // Just some simple validation, not too realistic
-        $validatedDetails = $request->validate([
-            'name' => ['required', 'min:1', 'max:30'],
+        if (Auth::check()) {
+            return redirect('/pay');
+        }
+        
+        $valid = $request->validate([
+            'name' => ['required', 'string', 'min:1', 'max:30'],
             'email' => ['required', 'email', 'max:100'],
-            'password' => ['required', 'min:8', 'max:20'],
+            'password' => ['required', 'string', 'min:8', 'max:20'],
         ]);
 
         $user = new User();
-        $user->name = $validatedDetails['name'];
-        $user->email = $validatedDetails['email'];
-        $user->password = Hash::make($validatedDetails['password']);
+        $user->name = $valid['name'];
+        $user->email = $valid['email'];
+        $user->password = Hash::make($valid['password']);
 
         $user->save();
 
