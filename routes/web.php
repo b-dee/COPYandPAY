@@ -18,11 +18,7 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect('/pay');
-    }
-
-    return view('home');
+    return Auth::check() ? redirect('/pay') : view('home');
 });
 
 Route::get('/register', [RegisterController::class, 'index']);
@@ -36,7 +32,5 @@ Route::any('/logout', [LoginController::class, 'logOut'])->middleware('auth');
 Route::get('/pay', [PaymentController::class, 'index'])->middleware('auth');
 Route::post('/pay', [PaymentController::class, 'pay'])->middleware('auth');
 Route::get('/pay/history', [PaymentController::class, 'history'])->middleware('auth');
-
 Route::get('/pay/{id}', [PaymentController::class, 'index'])->middleware('auth');
-
 Route::get('/pay/{id}/result', [PaymentController::class, 'result'])->middleware('auth');

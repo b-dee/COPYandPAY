@@ -7,15 +7,14 @@
   <li class="nav-item"><a class="nav-link" href="{{ url('/logout') }}">Sign out</a></li>
 @endsection
 
-{{-- There is no particular reason I did this in one view. It could have been two separate views (like result). 
-I was just playing with the new blade template extension I found for my editor! --}}
-
 @section('content')
   <h1 class="pb-4">Make a payment</h1>
   <p class="lead">Please enter your payment details below.</p>
   @if ($isPayment)
     {{-- Payment form --}}
-    <form action="{{ url("/pay/{$checkoutId}/result") }}" class="paymentWidgets" data-brands="VISA"></form>
+    <div class="row pt-5">
+      <form action="{{ url("/pay/{$checkoutId}/result") }}" class="paymentWidgets" data-brands="VISA"></form>
+    </div>
   @else
     {{-- Preparation form --}}
     <form action="{{ url('/pay') }}" method="POST">
