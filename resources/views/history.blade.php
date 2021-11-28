@@ -12,7 +12,7 @@
   <p class="lead">Here are your recent transactions:</p>
 
   @foreach ($payments as $payment)
-    <div class="card mt-4">
+    <div class="card mt-3 mb-3">
       <div class="card-body">
         <h4 class="card-title">{{ $payment->amount }} {{ $payment->currency }}</h4>
         <p class="card-text">#{{ $payment->merchant_tx_id }}</p>
