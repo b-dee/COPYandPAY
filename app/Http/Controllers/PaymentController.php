@@ -41,7 +41,7 @@ class PaymentController extends Controller
         ]);
     }
 
-    protected static function cacheKey(array $params, string $prefix = ''): string
+    public static function cacheKey(array $params, string $prefix = ''): string
     {
         $str = '';
         foreach ($params as $param) {
@@ -69,7 +69,7 @@ class PaymentController extends Controller
         ]);
     }
 
-    protected static function makePrepareBody(Payment $payment, string $entityId): array 
+    public static function makePrepareBody(Payment $payment, string $entityId): array 
     {
         return [
             'entityId' => $entityId,
@@ -80,7 +80,7 @@ class PaymentController extends Controller
         ];
     }
 
-    protected static function isPrepareSuccessful(array $response): bool 
+    public static function isPrepareSuccessful(array $response): bool 
     {
         $id = $response['id'] ?? null;
         $code = $response['result']['code'] ?? null;
@@ -92,6 +92,11 @@ class PaymentController extends Controller
 
     public function pay(Request $request)
     {
+        /*
+            Could store the payment model against the checkout ID in the session (or a separate cookie, 
+            30 min TTL) here rather than requesting a new ID each time. It's valid for 30 mins according 
+            to the docs.
+        */
         $valid = $request->validate([
             'amount' => [
                 'required', 
@@ -135,13 +140,13 @@ class PaymentController extends Controller
         return redirect("/pay/{$checkoutId}");
     }
 
-    protected static function isPaymentSuccessful(array $response): bool 
+    public static function isPaymentSuccessful(array $response): bool 
     {
         $code = $response['result']['code'] ?? null;
         return $code !== null && preg_match(self::REGEX_TRANSACTION_SUCCESS, $code) === 1;
     }
 
-    protected static function validateStatusResponse(array $response, Payment $payment): bool
+    public static function validateStatusResponse(array $response, Payment $payment): bool
     {
         return  $response['merchantTransactionId'] === $payment->merchant_tx_id
             &&  $response['amount'] === strval($payment->amount)
