@@ -16,7 +16,9 @@ Port setting are the defaults for HTTP, MySQL and Redis, but can probably be cha
 You'll need to set the following variables in .env. I didn't want to chance yours being sensitive (though I assume they aren't).
 
 COPY_AND_PAY_ENTITY_ID=... (from your test spec)
+
 COPY_AND_PAY_ACCESS_TOKEN=... (from your test spec)
+
 SESSION_DRIVER=database (or delete this variable so that it picks up the default)
 
 If you already have a development environment (apache, nginx etc.) you may be able to use that. You might even get away with running `php artisan serve` depending on your setup. 
