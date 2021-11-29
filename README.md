@@ -67,3 +67,8 @@ Note: I usually aim for as close to 100% code coverage as possible for unit test
 - Add a unit test.
 
 Any problems, get in touch and I'll be more than happy to help.
+
+## Possible future improvements
+
+- Move to named routes to tidy up routing a bit.
+- Store the payment model against the checkout ID in the session (or a separate cookie, 30 min TTL) here rather than requesting a new ID each time the form is submitted. It's valid for 30 mins according to the docs, so we could cache it to save a HTTP request. We'd need to provide the user a button to "forget" the transaction in progress and request a new ID, and do this automatically if used afterwards.
