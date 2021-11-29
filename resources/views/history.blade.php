@@ -15,10 +15,13 @@
     <div class="card mt-3 mb-3">
       <div class="card-body">
         <h4 class="card-title">{{ $payment->amount }} {{ $payment->currency }}</h4>
-        <p class="card-text">#{{ $payment->merchant_tx_id }}</p>
+        <p class="card-text">ID: {{ $payment->merchant_tx_id }}</p>
         <p class="card-text">{{ date("F j Y, g:i A", strtotime($payment->updated_at)) }}</p>
       </div>
     </div>
   @endforeach
+
+  {{-- Pagination UI elements --}}
+  {{ $payments->render() }}
 
 @endsection

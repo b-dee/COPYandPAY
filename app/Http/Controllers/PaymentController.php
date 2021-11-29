@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Cache;
 
 class PaymentController extends Controller
 {
@@ -15,6 +16,14 @@ class PaymentController extends Controller
     const REGEX_CHECKOUT_ID = '/[a-zA-Z0-9.\-]{32,48}/';
     const REGEX_PREPARE_SUCCESS = '/^(000\.200)/';
     const REGEX_TRANSACTION_SUCCESS = '/^(000\.000\.|000\.100\.1|000\.[36])/';
+
+    const CACHE_PREFIX_PAYMENT_HISTORY = 'payment_history_';
+
+    // Deliberately set to low number so you don't need to wait to see changes
+    const CACHE_TTL_PAYMENT_HISTORY = 15; // Seconds
+
+    // Deliberately set to low number so you don't need lots of payments to see pagination
+    const PER_PAGE_PAYMENT_HISTORY = 2;
 
     public function __construct()
     {
@@ -32,9 +41,28 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function history() 
+    protected static function cacheKey(array $params, string $prefix = ''): string
     {
-        $payments = Payment::where('user_id', Auth::id())->get();
+        $str = '';
+        foreach ($params as $param) {
+            $str .= strval($param) . '_';
+        }
+        return $prefix . md5($str);
+    }
+
+    public function history(Request $request) 
+    {
+        $userId = Auth::id();
+        $page = $request->query('page', 1);
+
+        $key = self::cacheKey([ $userId, $page ], self::CACHE_PREFIX_PAYMENT_HISTORY);
+
+        // Cache result of history query
+        $payments = Cache::remember($key, self::CACHE_TTL_PAYMENT_HISTORY, function () use ($userId) {
+            return Payment::where('user_id', $userId)
+                ->orderBy('created_at', 'desc')
+                ->simplePaginate(self::PER_PAGE_PAYMENT_HISTORY);
+        });
 
         return view('history', [
             'payments' => $payments
